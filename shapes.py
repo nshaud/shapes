@@ -6,6 +6,10 @@ from skimage import draw
 """ Simple elements
 
     Elements are defined by a center, a scale (on x and y) and an angle.
+
+    Since the 2D coordinates in numpy are line-column, this means that x is actually the height
+    and y is the width. We invert (x,y) to be less confusing when drawing figures.
+    However y increases when going "down" in the image.
 """
 class Rectangle():
     def __init__(self, center, width, height=None, rotation=0):
@@ -15,9 +19,9 @@ class Rectangle():
         self.rotation = rotation
     
     def coords(self):
-        top_left = self.x - (self.width // 2), self.y - (self.height // 2)
-        bottom_right = self.x + (self.width // 2), self.y + (self.height // 2)
-        coords = draw.rectangle_perimeter(top_left, extent=(self.width, self.height))
+        top_left = self.x - (self.height // 2), self.y - (self.width // 2)
+        bottom_right = self.x + (self.height // 2), self.y + (self.width // 2)
+        coords = draw.rectangle_perimeter(top_left, extent=(self.height, self.width))
         return coords
 
 class Ellipse():

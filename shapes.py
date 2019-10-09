@@ -14,7 +14,7 @@ class Rectangle():
         self.height = height if height is not None else width
         self.rotation = rotation
     
-    def get_coords(self):
+    def coords(self):
         top_left = self.x - (self.width // 2), self.y - (self.height // 2)
         bottom_right = self.x + (self.width // 2), self.y + (self.height // 2)
         coords = draw.rectangle_perimeter(top_left, extent=(self.width, self.height))
@@ -27,7 +27,7 @@ class Ellipse():
         self.minor = minor if minor is not None else major
         self.rotation = rotation
     
-    def get_coords(self):
+    def coords(self):
         coords = draw.ellipse_perimeter(self.x, self.y, self.major, self.minor)
         return coords
 
@@ -38,7 +38,7 @@ class Triangle():
         self.right_y, self.right_x = right_offset
         self.rotation = rotation
     
-    def get_coords(self):
+    def coords(self):
         rows = [self.x, self.x + self.left_x, self.x + self.right_x]
         columns = [self.y, self.y + self.left_y, self.y + self.right_y]
         coords = draw.polygon_perimeter(rows, columns)
@@ -55,30 +55,30 @@ class House():
         self.scale = scale
         self.rotation = rotation
     
-    def get_coords(self):
+    def coords(self):
         # A house is defined as a square and a triangle on top.
         walls = Rectangle((self.x, self.y), self.scale)
         # The rooftop (highest point) is in the horizontal middle of the house and at height max height + half the scale
         rooftop = (self.x, self.y - self.scale)
         roof = Triangle(rooftop, (-self.scale // 2, self.scale // 2), (self.scale // 2, self.scale // 2))
         # We concatenate the row and column coordinates for the walls and the roof
-        rr, cc = map(np.concatenate, zip(*(walls.get_coords(), roof.get_coords())))
+        rr, cc = map(np.concatenate, zip(*(walls.coords(), roof.coords())))
         return rr, cc
 
 rect = Rectangle((64, 64), 10, 30)
 img = np.zeros((128, 128), dtype=np.uint8)
-img[rect.get_coords()] = 1
+img[rect.coords()] = 1
 
 ellipse = Ellipse((80, 30), 10, 40)
-img[ellipse.get_coords()] = 1
+img[ellipse.coords()] = 1
 
 triangle = Triangle((5, 5), (0, 30), (30, 30))
-img[triangle.get_coords()] = 1
+img[triangle.coords()] = 1
 
 plt.imshow(img) and plt.show()
 
 # Draw a house
 img = np.zeros((128, 128), dtype=np.uint8)
 house = House((80, 64), 30)
-img[house.get_coords()] = 1
+img[house.coords()] = 1
 plt.imshow(img) and plt.show()

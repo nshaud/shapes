@@ -69,6 +69,20 @@ class House():
         rr, cc = map(np.concatenate, zip(*(walls.coords(), roof.coords())))
         return rr, cc
 
+class Car():
+    def __init__(self, center, scale, rotation=0):
+        self.x, self.y = center
+        self.scale = scale
+        self.rotation = rotation
+    
+    def coords(self):
+        body = Rectangle((self.x, self.y), width=self.scale, height=self.scale // 2)
+        cockpit = Rectangle((self.x, self.y - self.scale // 2 + self.scale // 12), width=self.scale // 2, height=self.scale // 3)
+        wheel_front = Ellipse((self.x - int(self.scale / 2.5), self.y + int(self.scale / 3.1)), self.scale // 10)
+        wheel_back = Ellipse((self.x + int(self.scale / 2.5), self.y + int(self.scale / 3.1)), self.scale // 10)
+        rr, cc = map(np.concatenate, zip(*(body.coords(), cockpit.coords(), wheel_front.coords(), wheel_back.coords())))
+        return rr, cc
+
 rect = Rectangle((64, 64), 10, 30)
 img = np.zeros((128, 128), dtype=np.uint8)
 img[rect.coords()] = 1
@@ -85,4 +99,9 @@ plt.imshow(img) and plt.show()
 img = np.zeros((128, 128), dtype=np.uint8)
 house = House((80, 64), 30)
 img[house.coords()] = 1
+plt.imshow(img) and plt.show()
+
+img = np.zeros((128, 160), dtype=np.uint8)
+car = Car((64, 90), 60)
+img[car.coords()] = 1
 plt.imshow(img) and plt.show()

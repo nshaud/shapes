@@ -3,6 +3,10 @@ import numpy as np
 
 from skimage import draw
 
+""" Simple elements
+
+    Elements are defined by a center, a scale (on x and y) and an angle.
+"""
 class Rectangle():
     def __init__(self, center, width, height=None, rotation=0):
         self.y, self.x = center
@@ -41,6 +45,10 @@ class Triangle():
         return coords
 
 
+""" Complex figures
+
+    Complex figures are comprised of a set of simple Elements.
+"""
 class House():
     def __init__(self, center, scale, rotation=0):
         self.x, self.y = center
@@ -48,9 +56,12 @@ class House():
         self.rotation = rotation
     
     def get_coords(self):
+        # A house is defined as a square and a triangle on top.
         walls = Rectangle((self.x, self.y), self.scale)
+        # The rooftop (highest point) is in the horizontal middle of the house and at height max height + half the scale
         rooftop = (self.x, self.y - self.scale)
         roof = Triangle(rooftop, (-self.scale // 2, self.scale // 2), (self.scale // 2, self.scale // 2))
+        # We concatenate the row and column coordinates for the walls and the roof
         rr, cc = map(np.concatenate, zip(*(walls.get_coords(), roof.get_coords())))
         return rr, cc
 
@@ -66,6 +77,7 @@ img[triangle.get_coords()] = 1
 
 plt.imshow(img) and plt.show()
 
+# Draw a house
 img = np.zeros((128, 128), dtype=np.uint8)
 house = House((80, 64), 30)
 img[house.get_coords()] = 1
